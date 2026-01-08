@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="ComputerShop.Application/ComputerShop.Application.csproj" />
+  <Project Path="ComputerShop.Repository/ComputerShop.Repository.csproj" />
+  <Project Path="ComputerShop.Service/ComputerShop.Service.csproj" />
+</Solution>
