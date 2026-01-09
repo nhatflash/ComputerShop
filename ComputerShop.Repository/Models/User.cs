@@ -1,9 +1,9 @@
-﻿using ComputerShop.Repository.Enum;
+﻿using ComputerShop.Repository.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ComputerShop.Repository.Model
+namespace ComputerShop.Repository.Models
 {
     public class User
     {
@@ -19,7 +19,7 @@ namespace ComputerShop.Repository.Model
 
         public string LastName { get; set; } = string.Empty;
 
-        public string PhoneNumber { get;set; } = string.Empty;
+        public string? PhoneNumber { get;set; }
 
         public string? Address { get; set; }
 
@@ -39,8 +39,8 @@ namespace ComputerShop.Repository.Model
 
         public DateTimeOffset? VerifiedAt { get; set; }
 
-        public DateTimeOffset CreatedAt { get; } = DateTimeOffset.Now;
+        public DateTimeOffset CreatedAt { get; }
 
-        public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset UpdatedAt { get; set; }
     }
 }
