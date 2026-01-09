@@ -1,3 +1,4 @@
+using ComputerShop.Application.Common;
 using ComputerShop.Application.Dto.Requests;
 using ComputerShop.Application.Dto.Responses;
 using ComputerShop.Service.Services;
@@ -26,14 +27,25 @@ namespace ComputerShop.Application.Controllers
                 return BadRequest("Sign in request is not valid.");
             }
             var result = await _serviceProvider.AuthService.HandleSignIn(request.Login, request.Password);
-            return Ok(new ApiResponse<SignInResponse>
-            {
-                StatusCode = StatusCodes.Status200OK,
-                Value = new SignInResponse
-                {
-                    AccessToken = result["accessToken"]
-                }
-            });
+            var response = ResponseMapper.MapToSignInResponse(result);
+            return Ok(response);
         }
+
+
+        [HttpPost("signup")]
+        public async Task<IActionResult> SignUp([FromBody] SignUpRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Sign up request is not valid.");
+            }
+
+            var user = await _serviceProvider.AuthService.HandleSignUp(request.Email, request.Password, request.ConfirmedPassword, request.FirstName, request.LastName);
+            var response = ResponseMapper.MapToUserResponse(user);
+            return Created("/signup", response);
+        }
+
+
+        
     }
 }

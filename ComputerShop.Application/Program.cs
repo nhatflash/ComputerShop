@@ -2,6 +2,7 @@ using System.Text;
 using ComputerShop.Application.Middleware;
 using ComputerShop.Repository.Context;
 using ComputerShop.Repository.Repositories;
+using ComputerShop.Service.Context;
 using ComputerShop.Service.Services;
 using ComputerShop.Service.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,9 +24,11 @@ builder.Services.AddScoped<ApplicationDbContext>();
 builder.Services.AddScoped<UnitOfWork>();
 
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ServiceProviders>();
 
 builder.Services.AddSingleton<JwtUtils>();
+builder.Services.AddScoped<PasswordEncoder>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -38,7 +41,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt => {
             errorNumbersToAdd: null
         );
     });
-    });
+    opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
+});
 
 builder.Services.AddAuthentication(opt =>
 {
@@ -62,6 +66,9 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<UserContext>();
 
 var app = builder.Build();
 

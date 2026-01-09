@@ -61,6 +61,10 @@ namespace ComputerShop.Repository.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasColumnName("first_name");
 
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("gender");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -69,8 +73,8 @@ namespace ComputerShop.Repository.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)")
                         .HasColumnName("password_hash");
 
                     b.Property<string>("PhoneNumber")

@@ -1,6 +1,6 @@
 using System;
 
-namespace ComputerShop.Application.Dto.Responses;
+namespace ComputerShop.Application.Common;
 
 public class ApiResponse<T>
 {

@@ -15,34 +15,60 @@ public class UserRepository
         _context = context;
     }
 
+    public async Task<User?> FindUserByIdAsync(Guid id)
+    {
+        return await _context.Users
+        .FirstOrDefaultAsync(u => u.Id == id);
+    }
 
     public async Task<User?> FindUserByEmailAsync(string email)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        return await _context.Users
+        .FirstOrDefaultAsync(u => u.Email == email);
     }
 
     public async Task<User?> FindUserByPhoneAsync(string phone)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phone);
+        return await _context.Users
+        .FirstOrDefaultAsync(u => u.PhoneNumber == phone);
     }
+
+    public async Task<User?> FindUserByIdWithTrackingAsync(Guid id)
+    {
+        return await _context.Users
+        .AsTracking()
+        .FirstOrDefaultAsync(u => u.Id == id);
+    }
+
+    public async Task<User?> FindUserByEmailWithTrackingAsync(string email)
+    {
+        return await _context.Users
+        .AsTracking()
+        .FirstOrDefaultAsync(u => u.Email == email);
+    }
+
+    public async Task<User?> FindUserByPhoneWithTrackingAsync(string phone)
+    {
+        return await _context.Users
+        .AsTracking()
+        .FirstOrDefaultAsync(u => u.PhoneNumber == phone);
+    }
+
+    public async Task<bool> UserExistByEmail(string email)
+    {
+        return await _context.Users.AnyAsync(u => u.Email == email);
+    }
+
+
+    public async Task<bool> UserExistByPhone(string phone)
+    {
+        return await _context.Users.AnyAsync(u => u.PhoneNumber == phone);
+    }
+
 
     public async Task AddUserAsync(User user)
     {
-        var strategy = _context.Database.CreateExecutionStrategy();
-        await strategy.ExecuteAsync(async () =>
-        {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-            try 
-            {
-                await _context.Users.AddAsync(user);
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        });
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using ComputerShop.Repository.CustomExceptions;
+using ComputerShop.Repository.Enums;
 using ComputerShop.Repository.Models;
 using ComputerShop.Repository.Repositories;
 using ComputerShop.Service.Utils;
@@ -11,11 +12,13 @@ public class AuthService
 {
     private readonly UnitOfWork _unitOfWork;
     private readonly JwtUtils _jwtUtils;
+    private readonly PasswordEncoder _passwordEncoder;
 
-    public AuthService(UnitOfWork unitOfWork, JwtUtils jwtUtils)
+    public AuthService(UnitOfWork unitOfWork, JwtUtils jwtUtils, PasswordEncoder passwordEncoder)
     {
         _unitOfWork = unitOfWork;
         _jwtUtils = jwtUtils;
+        _passwordEncoder = passwordEncoder;
     }
 
     public async Task<Dictionary<string, string>> HandleSignIn(string login, string password)
@@ -42,10 +45,38 @@ public class AuthService
 
         var tokenMap = new Dictionary<string, string>
         {
-            {"accessToken", _jwtUtils.GenerateAccessToken(user)}
+            {"accessToken", _jwtUtils.GenerateAccessToken(user)},
+            {"refreshToken", _jwtUtils.GenerateRefreshToken(user)}
         };
 
         return tokenMap;
+    }
+
+
+    public async Task<User> HandleSignUp(string email, string password, string confirmedPassword, string firstName, string lastName)
+    {
+        if (await _unitOfWork.UserRepository.UserExistByEmail(email))
+        {
+            throw new BadRequestException("This email is already in use.");
+        }
+
+        if (password != confirmedPassword)
+        {
+            throw new BadRequestException("Confirmed password does not match.");
+        }
+
+        User user = new User
+        {
+            Id = Guid.NewGuid(),
+            Email = email,
+            PasswordHash = _passwordEncoder.HashPassword(password),
+            FirstName = firstName,
+            LastName = lastName,
+            Status = UserStatus.Active,
+        };
+
+        await _unitOfWork.UserRepository.AddUserAsync(user);
+        return user;
     }
 
 }

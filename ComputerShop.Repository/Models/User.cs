@@ -21,6 +21,8 @@ namespace ComputerShop.Repository.Models
 
         public string? PhoneNumber { get;set; }
 
+        public Gender? Gender { get; set; }
+
         public string? Address { get; set; }
 
         public string? Ward { get; set; }

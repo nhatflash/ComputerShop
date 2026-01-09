@@ -17,11 +17,12 @@ namespace ComputerShop.Repository.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    password_hash = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    password_hash = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     first_name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     last_name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     phone_number = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     address = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ward = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     district = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComputerShop.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260109074006_InitialCreate")]
+    [Migration("20260109104311_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -64,6 +64,10 @@ namespace ComputerShop.Repository.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasColumnName("first_name");
 
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("gender");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -72,8 +76,8 @@ namespace ComputerShop.Repository.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)")
                         .HasColumnName("password_hash");
 
                     b.Property<string>("PhoneNumber")

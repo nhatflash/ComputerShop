@@ -22,7 +22,7 @@ namespace ComputerShop.Repository.Context
 
                 user.Property(u => u.PasswordHash)
                 .HasColumnName("password_hash")
-                .HasMaxLength(50)
+                .HasMaxLength(256)
                 .IsRequired();
 
                 user.Property(u => u.Role)
@@ -42,6 +42,10 @@ namespace ComputerShop.Repository.Context
                 user.Property(u => u.PhoneNumber)
                 .HasColumnName("phone_number")
                 .HasMaxLength(20);
+
+                user.Property(u => u.Gender)
+                .HasColumnName("gender")
+                .HasConversion<string>();
 
                 user.Property(u => u.Address)
                 .HasColumnName("address")
