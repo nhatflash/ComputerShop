@@ -18,9 +18,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi(opt =>
+builder.Services.AddOpenApi(options =>
 {
-    _ = opt.AddDocumentTransformer((document, context, cancellationToken) =>
+    _ = options.AddDocumentTransformer((document, context, cancellationToken) =>
     {
         document.Info = new()
         {
@@ -70,8 +70,8 @@ builder.Services.AddScoped<PasswordEncoder>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<ApplicationDbContext>(opt => {
-    opt.UseSqlServer(connectionString, sqlServerOptionsAction: sqlOpt =>
+builder.Services.AddDbContext<ApplicationDbContext>(options => {
+    options.UseSqlServer(connectionString, sqlServerOptionsAction: sqlOpt =>
     {
         sqlOpt.EnableRetryOnFailure(
             maxRetryCount: 5,
@@ -79,7 +79,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt => {
             errorNumbersToAdd: null
         );
     });
-    opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
 });
 
 builder.Services.AddAuthentication(opt =>
@@ -110,6 +110,17 @@ builder.Services.AddScoped<UserContext>();
 
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "https://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -117,13 +128,15 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwagger();
-    app.UseSwaggerUI(opt =>
+    app.UseSwaggerUI(options =>
     {
-        opt.SwaggerEndpoint("/openapi/v1.json", "Computer API v1");
+        options.SwaggerEndpoint("/openapi/v1.json", "Computer API v1");
     });
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();

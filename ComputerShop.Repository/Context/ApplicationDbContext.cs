@@ -97,9 +97,11 @@ namespace ComputerShop.Repository.Context
                 user.HasKey(u => u.Id);
 
                 user.HasIndex(u => u.Email)
+                    .HasDatabaseName("idx_userEmail")
                     .IsUnique();
 
                 user.HasIndex(u => u.PhoneNumber)
+                    .HasDatabaseName("idx_userPhone")
                     .IsUnique();
             });
 
@@ -122,6 +124,7 @@ namespace ComputerShop.Repository.Context
                 mn.HasKey(m => m.Id);
 
                 mn.HasIndex(u => u.Name)
+                    .HasDatabaseName("idx_manufacturerName")
                     .IsUnique();
             });
 
@@ -154,8 +157,10 @@ namespace ComputerShop.Repository.Context
 
                 ct.HasKey(c => c.Id);
 
-                ct.HasIndex(c => c.Name).IsUnique();
-            });
+                ct.HasIndex(c => c.Name)
+                    .HasDatabaseName("idx_categoryName")
+                    .IsUnique();
+            }); 
 
 
 
@@ -207,7 +212,9 @@ namespace ComputerShop.Repository.Context
 
                 pd.HasKey(p => p.Id);
 
-                pd.HasIndex(p => p.Name).IsUnique();
+                pd.HasIndex(p => p.Name)
+                    .HasDatabaseName("idx_productName")
+                    .IsUnique();
 
                 pd.OwnsOne(p => p.Specifications, builder =>
                 {
@@ -227,11 +234,36 @@ namespace ComputerShop.Repository.Context
                     .HasForeignKey(p => p.ManufacturerId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+
+
+            // db-schema for ProductImage model
+            modelBuilder.Entity<ProductImage>(pdi =>
+            {
+                pdi.Property(i => i.Id)
+                    .HasColumnName("id");
+
+                pdi.Property(i => i.ProductId)
+                    .HasColumnName("product_id")
+                    .IsRequired();
+
+                pdi.Property(i => i.ImageUrl)
+                    .HasColumnName("image_url")
+                    .IsRequired();
+
+                pdi.Property(i => i.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("GETUTCDATE()");
+
+                pdi.HasOne(i => i.Product)
+                    .WithMany(p => p.ProductImages)
+                    .HasForeignKey(i => i.ProductId);
+            });
         }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Manufacturer> Manufacturers { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
     }
 }

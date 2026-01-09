@@ -31,6 +31,8 @@ public class Product
     public Category Category { get; set; } = default!;
 
     public Manufacturer Manufacturer { get; set; } = default!;
+
+    public ICollection<ProductImage> ProductImages { get; set; } = [];
 }
 
 
