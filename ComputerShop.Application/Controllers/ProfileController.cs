@@ -36,6 +36,7 @@ namespace ComputerShop.Application.Controllers
 
 
         [HttpPatch]
+        [Authorize]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
         {
             var currentUserId = _userContext.GetCurrentAuthenticatedUserId();
@@ -43,5 +44,19 @@ namespace ComputerShop.Application.Controllers
             var response = ResponseMapper.MapToUserResponse(user);
             return Ok(response);
         }
+
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> RetrieveProfile() {
+            var currentUserId = _userContext.GetCurrentAuthenticatedUserId();
+            var user = await _serviceProvider.UserService.FindUserById(currentUserId);
+            var response = ResponseMapper.MapToUserResponse(user);
+            return Ok(response);
+        }
+
+
+        
+
     }
 }
