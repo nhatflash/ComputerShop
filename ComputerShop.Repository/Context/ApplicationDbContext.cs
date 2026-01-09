@@ -11,6 +11,9 @@ namespace ComputerShop.Repository.Context
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> opt) : base(opt) { }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+        }
 
         public DbSet<User> Users { get; set; }
     }
