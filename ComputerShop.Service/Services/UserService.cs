@@ -69,6 +69,18 @@ public class UserService
     }
 
 
+
+    public async Task<User> FindUserById(Guid id)
+    {
+        var user = await _unitOfWork.UserRepository.FindUserByIdAsync(id);
+        if (user == null)
+        {
+            throw new NotFoundException("User not found.");
+        }
+        return user;
+    }
+
+
     private async Task<User> UpdateProfileWithNewInformation(User user, string? firstName, string? lastName, string? phone, string? address, string? ward, string? district, string? city, string? province, string? postalCode, string? profileImage)
     {
         if (!string.IsNullOrWhiteSpace(firstName))
