@@ -309,6 +309,11 @@ namespace ComputerShop.Repository.Context
                     .HasPrecision(18, 2)
                     .IsRequired();
 
+                odr.Property(o => o.Type)
+                    .HasColumnName("type")
+                    .HasConversion<string>()
+                    .IsRequired();
+
                 odr.Property(o => o.ShippingAddress)
                     .HasColumnName("shipping_address")
                     .HasMaxLength(256);
@@ -322,6 +327,10 @@ namespace ComputerShop.Repository.Context
                     .HasColumnName("status")
                     .HasConversion<string>()
                     .IsRequired();
+
+                odr.Property(o => o.Notes)
+                    .HasColumnName("notes")
+                    .HasMaxLength(256);
 
                 odr.Property(o => o.UpdatedAt)
                     .HasColumnName("updated_at")

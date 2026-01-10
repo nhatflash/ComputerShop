@@ -19,13 +19,17 @@ public class Order
 
     public decimal TotalAmount { get; set; }
 
+    public OrderType Type { get; set; }
+
     public string? ShippingAddress { get; set; }
 
     public string TrackingPhone { get; set; } = string.Empty;
 
     public OrderStatus Status { get; set; }
 
+    public string? Notes { get; set; }
+
     public DateTimeOffset UpdatedAt { get; set; }
 
-    public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public ICollection<OrderItem> OrderItems { get; set; } = [];
 }  

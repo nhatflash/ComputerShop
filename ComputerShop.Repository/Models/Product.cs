@@ -15,7 +15,7 @@ public class Product
 
     public string Description { get; set; } = string.Empty;
 
-    public Dictionary<string, string> Specifications { get; set; } = new();
+    public Dictionary<string, string> Specifications { get; set; } = [];
 
     public decimal Price { get; set; }
 
