@@ -38,7 +38,7 @@ public class AuthService
             throw new UnauthorizedException("Invalid credentials.");
         }
 
-        if (user.PasswordHash != password)
+        if (!_passwordEncoder.VerifyPassword(password, user.PasswordHash))
         {
             throw new UnauthorizedException("Invalid credentials.");
         }

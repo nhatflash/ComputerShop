@@ -37,12 +37,23 @@ public class ManufacturerRepository
     }
 
 
+    public async Task<bool> ManufacturerExistByNameAsync(string name)
+    {
+        return await _context.Manufacturers.AnyAsync(m => m.Name == name);
+    }
+
+
     public async Task AddManufacturerAsync(Manufacturer manufacturer)
     {
         await _context.Manufacturers.AddAsync(manufacturer);
         await _context.SaveChangesAsync();
     }
 
+
+    public async Task<bool> ManufacturerExitByIdAsync(Guid id)
+    {
+        return await _context.Manufacturers.AnyAsync(m => m.Id == id);
+    }
 
     
 }

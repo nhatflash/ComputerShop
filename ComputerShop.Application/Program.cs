@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using ComputerShop.Application.Middleware;
 using ComputerShop.Repository.Context;
 using ComputerShop.Repository.Repositories;
@@ -16,7 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi(options =>
 {
@@ -63,6 +67,9 @@ builder.Services.AddScoped<UnitOfWork>();
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ManufacturerService>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ServiceProviders>();
 
 builder.Services.AddSingleton<JwtUtils>();

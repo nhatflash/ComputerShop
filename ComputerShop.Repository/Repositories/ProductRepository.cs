@@ -33,7 +33,7 @@ public class ProductRepository
         return await _context.Products.AsTracking().FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<Product?> FindProductByIdAndImages(Guid id)
+    public async Task<Product?> FindProductByIdAndImagesAsync(Guid id)
     {
         return await _context.Products.Include(p => p.ProductImages).FirstOrDefaultAsync(p => p.Id == id);
     }
@@ -41,5 +41,11 @@ public class ProductRepository
     public async Task<Product?> FindProductByIdAndImagesWithTrackingAsync(Guid id)
     {
         return await _context.Products.Include(p => p.ProductImages).AsTracking().FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+
+    public async Task<bool> ProductExistByNameAsync(string name)
+    {
+        return await _context.Products.AnyAsync(p => p.Name == name);
     }
 }

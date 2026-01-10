@@ -1,8 +1,11 @@
 ﻿using ComputerShop.Repository.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json;
 
 namespace ComputerShop.Repository.Context
 {
@@ -113,7 +116,7 @@ namespace ComputerShop.Repository.Context
                     .HasColumnName("id");
 
                 mn.Property(m => m.Name)
-                    .HasMaxLength(255)
+                    .HasMaxLength(256)
                     .HasColumnName("name")
                     .IsRequired();
 
@@ -179,7 +182,7 @@ namespace ComputerShop.Repository.Context
                     .IsRequired();
 
                 pd.Property(p => p.Name)
-                    .HasMaxLength(255)
+                    .HasMaxLength(256)
                     .HasColumnName("name")
                     .IsRequired();
 
@@ -216,13 +219,20 @@ namespace ComputerShop.Repository.Context
                     .HasDatabaseName("idx_productName")
                     .IsUnique();
 
-                pd.OwnsOne(p => p.Specifications, builder =>
-                {
-                    builder.ToJson("specifications");
-                });
+                var comparer = new ValueComparer<Dictionary<string, string>>(
+                    (c1, c2) => JsonSerializer.Serialize(c1, (JsonSerializerOptions)null!) == JsonSerializer.Serialize(c2, (JsonSerializerOptions)null!), 
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.Key.GetHashCode(), v.Value.GetHashCode())),
+                    c => JsonSerializer.Deserialize<Dictionary<string, string>>(JsonSerializer.Serialize(c, (JsonSerializerOptions)null!), (JsonSerializerOptions)null!)!
+                );
 
-                pd.Navigation(p => p.Specifications)
-                    .IsRequired();
+                pd.Property(p => p.Specifications)
+                    .HasColumnName("specifications")
+                    .HasConversion(
+                        v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null!),
+                        v => JsonSerializer.Deserialize<Dictionary<string, string>>(v, (JsonSerializerOptions)null!)!
+                    )
+                    .HasColumnType("NVARCHAR(MAX)")
+                    .Metadata.SetValueComparer(comparer);
 
                 pd.HasOne(p => p.Category)
                     .WithMany()
@@ -258,6 +268,101 @@ namespace ComputerShop.Repository.Context
                     .WithMany(p => p.ProductImages)
                     .HasForeignKey(i => i.ProductId);
             });
+
+            // db-schema for Order model
+            modelBuilder.Entity<Order>(odr =>
+            {
+                odr.Property(o => o.Id)
+                    .HasColumnName("id");
+
+                odr.Property(o => o.UserId)
+                    .HasColumnName("user_id")
+                    .IsRequired();
+
+                odr.Property(o => o.OrderDate)
+                    .HasColumnName("order_date")
+                    .HasDefaultValueSql("GETUTCDATE()");
+
+                odr.Property(o => o.SubTotal)
+                    .HasColumnName("sub_total")
+                    .HasPrecision(18, 2)
+                    .IsRequired();
+
+                odr.Property(o => o.ShippingCost)
+                    .HasColumnName("shipping_cost")
+                    .HasPrecision(18, 2)
+                    .IsRequired();
+
+                odr.Property(o => o.Tax)
+                    .HasColumnName("tax")
+                    .HasPrecision(18, 2)
+                    .IsRequired();
+
+                odr.Property(o => o.TotalAmount)
+                    .HasColumnName("total_amount")
+                    .HasPrecision(18, 2)
+                    .IsRequired();
+
+                odr.Property(o => o.ShippingAddress)
+                    .HasColumnName("shipping_address")
+                    .HasMaxLength(256);
+
+                odr.Property(o => o.TrackingPhone)
+                    .HasColumnName("tracking_phone")
+                    .HasMaxLength(20)
+                    .IsRequired();
+
+                odr.Property(o => o.Status)
+                    .HasColumnName("status")
+                    .HasConversion<string>()
+                    .IsRequired();
+
+                odr.Property(o => o.UpdatedAt)
+                    .HasColumnName("updated_at")
+                    .HasDefaultValueSql("GETUTCDATE()");
+
+                odr.HasKey(o => o.Id);
+                
+            });
+
+            modelBuilder.Entity<OrderItem>(odr =>
+            {
+                odr.Property(o => o.Id)
+                    .HasColumnName("id");
+
+                odr.Property(o => o.OrderId)
+                    .HasColumnName("orderId")
+                    .IsRequired();
+
+                odr.Property(o => o.ProductId)
+                    .HasColumnName("productId")
+                    .IsRequired();
+
+                odr.Property(o => o.Quantity)
+                    .HasColumnName("quantity")
+                    .HasDefaultValue(0)
+                    .IsRequired();
+
+                odr.Property(o => o.UnitPrice)
+                    .HasColumnName("unit_price")
+                    .HasPrecision(18, 2)
+                    .IsRequired();
+
+                odr.Property(o => o.SubTotal)
+                    .HasColumnName("sub_total")
+                    .HasPrecision(18, 2)
+                    .IsRequired();
+
+                odr.HasOne(o => o.Order)
+                    .WithMany(o => o.OrderItems)
+                    .HasForeignKey(o => o.OrderId);
+                
+                odr.HasOne(o => o.Product)
+                    .WithMany()
+                    .HasForeignKey(o => o.ProductId);
+                
+                odr.HasKey(o => o.Id);
+            });
         }
 
         public DbSet<User> Users { get; set; }
@@ -265,5 +370,7 @@ namespace ComputerShop.Repository.Context
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
     }
 }
