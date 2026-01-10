@@ -39,6 +39,7 @@ namespace ComputerShop.Application.Controllers
                 }
             }
             var currentUserId = _userContext.GetCurrentAuthenticatedUserId();
+            var order = await _serviceProvider.OrderService.HandleCreateOrder(currentUserId, request.Type, request.ShippingAddress, request.TrackingPhone, request.Notes, itemParam);
             return Ok(null);
         }
     }

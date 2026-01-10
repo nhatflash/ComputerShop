@@ -144,4 +144,60 @@ public class ResponseMapper
         }
         return responses;
     }
+
+
+    public static OrderItemResponse MapToOrderItemResponse(OrderItem orderItem)
+    {
+        return new OrderItemResponse
+        {
+            Id = orderItem.Id,
+            OrderId = orderItem.OrderId,
+            ProductId = orderItem.ProductId,
+            Quantity = orderItem.Quantity,
+            UnitPrice = orderItem.UnitPrice,
+            SubTotal = orderItem.SubTotal
+        };
+    }
+
+    public static List<OrderItemResponse> MapToOrderItemResponses(List<OrderItem> orderItems)
+    {
+        List<OrderItemResponse> responses = [];
+        foreach (var orderItem in orderItems)
+        {
+            var response = MapToOrderItemResponse(orderItem);
+            responses.Add(response);
+        }
+        return responses;
+    }
+
+    public static OrderResponse MapToOrderResponse(Order order)
+    {
+        return new OrderResponse
+        {
+            Id = order.Id,
+            UserId = order.UserId,
+            OrderDate = order.OrderDate,
+            SubTotal = order.SubTotal,
+            ShippingCost = order.ShippingCost,
+            Tax = order.Tax,
+            TotalAmount = order.TotalAmount,
+            Type = order.Type,
+            ShippingAddress = order.ShippingAddress,
+            TrackingPhone = order.TrackingPhone,
+            Status = order.Status,
+            Notes = order.Notes,
+            OrderItems = MapToOrderItemResponses((List<OrderItem>)order.OrderItems)
+        };
+    }
+
+    public static List<OrderResponse> MapToOrderResponses(List<Order> orders)
+    {
+        List<OrderResponse> responses = [];
+        foreach (var order in orders)
+        {
+            var response = MapToOrderResponse(order);
+            responses.Add(response);
+        }
+        return responses;
+    }
 }

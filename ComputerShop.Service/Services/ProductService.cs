@@ -77,26 +77,33 @@ public class ProductService
 
     public async Task<Product> FindProductById(Guid id)
     {
-        var product = await _unitOfWork.ProductRepository.FindProductByIdAndImagesAsync(id);
-        if (product == null)
-        {
-            throw new NotFoundException("No product found.");
-        }
+        var product = await _unitOfWork.ProductRepository.FindProductByIdAndImagesAsync(id) ?? throw new NotFoundException("No product found.");
         return product;
     }
 
 
     public async Task<Product> HandleUpdateProduct(Guid productId, string? name, string? description, Dictionary<string, string>? specifications, decimal? price, int? warrantyMonth)
     {
-        var product = await _unitOfWork.ProductRepository.FindProductByIdAndImagesWithTrackingAsync(productId);
-        if (product == null)
-        {
-            throw new BadRequestException("No product found.");
-        }
+        var product = await _unitOfWork.ProductRepository.FindProductByIdAndImagesWithTrackingAsync(productId) ?? throw new BadRequestException("No product found.");
         return await UpdateNewProductInformation(product, name, description, specifications, price, warrantyMonth);
     }
 
-    public async Task<Product> UpdateNewProductInformation(Product product, string? name, string? description, Dictionary<string, string>? specifications, decimal? price, int? warrantyMonth)
+
+    public async Task<Product> HandleAddProductQuantity(Guid productId, int quantity)
+    {
+        var product = await _unitOfWork.ProductRepository.FindProductByIdWithTrackingAsync(productId) ?? throw new NotFoundException("No product found.");
+
+        if (quantity <= 0)
+        {
+            throw new BadRequestException("The requested quantity must be greater than 0.");
+        }
+
+        product.StockQuantity += quantity;
+        await _unitOfWork.SaveChangesAsync();
+        return product;
+    }
+
+    private async Task<Product> UpdateNewProductInformation(Product product, string? name, string? description, Dictionary<string, string>? specifications, decimal? price, int? warrantyMonth)
     {
         if (!string.IsNullOrWhiteSpace(name))
         {
@@ -135,4 +142,7 @@ public class ProductService
         await _unitOfWork.SaveChangesAsync();
         return product;
     }
+
+
+
 }

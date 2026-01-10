@@ -10,17 +10,20 @@ public class ServiceProviders
     public ManufacturerService ManufacturerService { get; }
     public CategoryService CategoryService { get; }
     public ProductService ProductService { get; }
+    public OrderService OrderService { get; set; }
 
     public ServiceProviders(AuthService authService, 
                             UserService userService, 
                             ManufacturerService manufacturerService, 
                             CategoryService categoryService, 
-                            ProductService productService)
+                            ProductService productService, 
+                            OrderService orderService)
     {
         AuthService = authService;
         UserService = userService;
         ManufacturerService = manufacturerService;
         CategoryService = categoryService;
         ProductService = productService;
+        OrderService = orderService;
     }
 }

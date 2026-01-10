@@ -13,6 +13,7 @@ public class UnitOfWork
     public CategoryRepository CategoryRepository { get; }
     public ProductRepository ProductRepository { get; }
     public ProductImageRepository ProductImageRepository { get; }
+    public OrderRepository OrderRepository { get; }
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -22,6 +23,7 @@ public class UnitOfWork
         CategoryRepository = new CategoryRepository(context);
         ProductRepository = new ProductRepository(context);
         ProductImageRepository = new ProductImageRepository(context);
+        OrderRepository = new OrderRepository(context);
     }
 
     public async Task SaveChangesAsync()
