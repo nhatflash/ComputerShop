@@ -41,6 +41,17 @@ public class ResponseMapper
         };
     }
 
+    public static List<UserResponse> MapToUserResponses(List<User> users)
+    {
+        List<UserResponse> responses = [];
+        foreach (var user in users)
+        {
+            var response = MapToUserResponse(user);
+            responses.Add(response);
+        }
+        return responses;
+    }
+
 
     public static ManufacturerResponse MapToManufacturerResponse(Manufacturer manufacturer)
     {
@@ -49,6 +60,17 @@ public class ResponseMapper
             Id = manufacturer.Id,
             Name = manufacturer.Name,
         };
+    }
+
+    public static List<ManufacturerResponse> MapToManufacturerResponses(List<Manufacturer> manufacturers)
+    {
+        List<ManufacturerResponse> responses = [];
+        foreach (var manufacturer in manufacturers)
+        {
+            var response = MapToManufacturerResponse(manufacturer);
+            responses.Add(response);
+        }
+        return responses;
     }
 
     public static CategoryResponse MapToCategoryResponse(Category category)
@@ -60,6 +82,17 @@ public class ResponseMapper
             Description = category.Description,
             ImageUrl = category.ImageUrl,
         };
+    }
+
+    public static List<CategoryResponse> MapToCategoryResponses(List<Category> categories)
+    {
+        List<CategoryResponse> responses = [];
+        foreach (var category in categories)
+        {
+            var response = MapToCategoryResponse(category);
+            responses.Add(response);
+        }
+        return responses;
     }
 
 
@@ -77,5 +110,38 @@ public class ResponseMapper
             StockQuantity = product.StockQuantity,
             Status = product.Status
         };
+    }
+
+    public static List<ProductResponse> MapToProductResponses(List<Product> products)
+    {
+        List<ProductResponse> responses = [];
+        foreach (var product in products)
+        {
+            var response = MapToProductResponse(product);
+            responses.Add(response);
+        }
+        return responses;
+    }
+
+    public static ProductImageResponse MapToProductImageResponse(ProductImage productImage)
+    {
+        return new ProductImageResponse
+        {
+            Id = productImage.Id,
+            ProductId = productImage.ProductId,
+            ImageUrl = productImage.ImageUrl,
+        };
+    }
+
+
+    public static List<ProductImageResponse> MapToProductImageResponses(List<ProductImage> productImages)
+    {
+        List<ProductImageResponse> responses = [];
+        foreach (var productImage in productImages)
+        {
+            var response = MapToProductImageResponse(productImage);
+            responses.Add(response);
+        }
+        return responses;
     }
 }

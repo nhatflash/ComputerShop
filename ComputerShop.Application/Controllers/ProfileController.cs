@@ -28,6 +28,10 @@ namespace ComputerShop.Application.Controllers
         [HttpPatch("complete")]
         public async Task<IActionResult> CompleteProfileInfo([FromBody] CompleteProfileInfoRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Complete profile info request is not valid.");
+            }
             var currentUserId = _userContext.GetCurrentAuthenticatedUserId();
             var user = await _serviceProvider.UserService.HandleCompleteProfileInfo(currentUserId, request.PhoneNumber, request.Gender, request.Address, request.Ward, request.District, request.City, request.Province, request.PostalCode, request.ProfileImage);
             var response = ResponseMapper.MapToUserResponse(user);
@@ -39,6 +43,10 @@ namespace ComputerShop.Application.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Update profile request is not valid.");
+            }
             var currentUserId = _userContext.GetCurrentAuthenticatedUserId();
             var user = await _serviceProvider.UserService.HandleUpdateProfile(currentUserId, request.FirstName, request.LastName, request.PhoneNumber, request.Address, request.Ward, request.District, request.City, request.Province, request.PostalCode, request.ProfileImage);
             var response = ResponseMapper.MapToUserResponse(user);

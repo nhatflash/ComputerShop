@@ -48,4 +48,15 @@ public class ProductRepository
     {
         return await _context.Products.AnyAsync(p => p.Name == name);
     }
+
+
+    public async Task<List<Product>> FindAllProductsAsync()
+    {
+        return await _context.Products.ToListAsync();
+    }
+
+    public async Task<List<Product>> FindAllProductsWithImagesAsync()
+    {
+        return await _context.Products.Include(p => p.ProductImages).ToListAsync();
+    }
 }

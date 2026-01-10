@@ -26,7 +26,7 @@ namespace ComputerShop.Application.Controllers
             {
                 return BadRequest("Add product request is not valid.");
             }
-            var product = await _serviceProvider.ProductService.HandleAddProduct(request.CategoryId, request.ManufacturerId, request.Name, request.Description, request.Specifications, request.Price);
+            var product = await _serviceProvider.ProductService.HandleAddProduct(request.CategoryId, request.ManufacturerId, request.Name, request.Description, request.Specifications, request.Price, request.WarrantyMonth, request.ImageUrls);
             var response = ResponseMapper.MapToProductResponse(product);
             return Created("created", response);
         }
@@ -36,6 +36,19 @@ namespace ComputerShop.Application.Controllers
         public async Task<IActionResult> FindProduct([FromRoute] Guid productId)
         {
             var product = await _serviceProvider.ProductService.FindProductById(productId);
+            var response = ResponseMapper.MapToProductResponse(product);
+            return Ok(response);
+        }
+
+        [HttpPatch("{productId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateProduct([FromRoute] Guid productId, [FromBody] UpdateProductRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Update product request is not valid.");
+            }
+            var product = await _serviceProvider.ProductService.HandleUpdateProduct(productId, request.Name, request.Description, request.Specifications, request.Price, request.WarrantyMonth);
             var response = ResponseMapper.MapToProductResponse(product);
             return Ok(response);
         }

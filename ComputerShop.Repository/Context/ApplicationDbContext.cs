@@ -200,6 +200,11 @@ namespace ComputerShop.Repository.Context
                     .HasDefaultValue(0)
                     .IsRequired();
 
+                pd.Property(p => p.WarrantyMonth)
+                    .HasColumnName("warranty_month")
+                    .HasDefaultValue(0)
+                    .IsRequired();
+
                 pd.Property(p => p.Status)
                     .HasColumnName("status")
                     .HasConversion<string>()
@@ -269,6 +274,7 @@ namespace ComputerShop.Repository.Context
                     .HasForeignKey(i => i.ProductId);
             });
 
+
             // db-schema for Order model
             modelBuilder.Entity<Order>(odr =>
             {
@@ -325,6 +331,8 @@ namespace ComputerShop.Repository.Context
                 
             });
 
+
+            // db-schema for OrderItem model
             modelBuilder.Entity<OrderItem>(odr =>
             {
                 odr.Property(o => o.Id)
@@ -359,7 +367,8 @@ namespace ComputerShop.Repository.Context
                 
                 odr.HasOne(o => o.Product)
                     .WithMany()
-                    .HasForeignKey(o => o.ProductId);
+                    .HasForeignKey(o => o.ProductId)
+                    .OnDelete(DeleteBehavior.Restrict);
                 
                 odr.HasKey(o => o.Id);
             });

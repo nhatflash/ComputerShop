@@ -24,4 +24,8 @@ public class AddProductRequest
     [Required(ErrorMessage = "Price is required.")]
     public decimal Price { get; set; }
 
+    [Required(ErrorMessage = "Warranty month is required.")]
+    public int WarrantyMonth { get; set; }
+
+    public List<string> ImageUrls { get; set; } = [];
 }

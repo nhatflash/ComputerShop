@@ -21,6 +21,9 @@ public class Product
 
     public int StockQuantity { get; set; }
 
+
+    public int WarrantyMonth { get; set; }
+
     public ProductStatus Status { get; set; }
 
     public DateTimeOffset CreatedAt { get; set; }
