@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using PayOS;
 
 var builder = WebApplication.CreateBuilder(args);
 
