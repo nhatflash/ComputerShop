@@ -1,7 +1,4 @@
 ﻿using ComputerShop.Repository.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ComputerShop.Repository.Models
 {

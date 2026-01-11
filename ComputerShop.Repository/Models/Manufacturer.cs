@@ -1,5 +1,3 @@
-using System;
-
 namespace ComputerShop.Repository.Models;
 
 public class Manufacturer

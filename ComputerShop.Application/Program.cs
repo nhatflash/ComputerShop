@@ -6,13 +6,10 @@ using ComputerShop.Repository.Repositories;
 using ComputerShop.Service.Context;
 using ComputerShop.Service.Services;
 using ComputerShop.Service.Utils;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-using PayOS;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +69,7 @@ builder.Services.AddScoped<ManufacturerService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<ServiceProviders>();
 
 builder.Services.AddSingleton<JwtUtils>();

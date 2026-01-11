@@ -1,9 +1,7 @@
-using System;
 using ComputerShop.Repository.CustomExceptions;
 using ComputerShop.Repository.Enums;
 using ComputerShop.Repository.Models;
 using ComputerShop.Repository.Repositories;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ComputerShop.Service.Services;
 

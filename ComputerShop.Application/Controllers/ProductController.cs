@@ -1,8 +1,8 @@
 using ComputerShop.Application.Common;
 using ComputerShop.Application.Dto.Requests;
+using ComputerShop.Application.Dto.Responses;
 using ComputerShop.Service.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerShop.Application.Controllers
@@ -26,8 +26,19 @@ namespace ComputerShop.Application.Controllers
             {
                 return BadRequest("Add product request is not valid.");
             }
-            var product = await _serviceProvider.ProductService.HandleAddProduct(request.CategoryId, request.ManufacturerId, request.Name, request.Description, request.Specifications, request.Price, request.WarrantyMonth, request.ImageUrls);
-            var response = ResponseMapper.MapToProductResponse(product);
+            var product = await _serviceProvider.ProductService.HandleAddProduct(request.CategoryId, 
+                                                                                 request.ManufacturerId, 
+                                                                                 request.Name, 
+                                                                                 request.Description, 
+                                                                                 request.Specifications, 
+                                                                                 request.Price, 
+                                                                                 request.WarrantyMonth, 
+                                                                                 request.ImageUrls);
+            var response = new ApiResponse<ProductResponse>
+            {
+                StatusCode = StatusCodes.Status201Created,
+                Value = ResponseMapper.MapToProductResponse(product),
+            };
             return Created("created", response);
         }
 
@@ -36,7 +47,11 @@ namespace ComputerShop.Application.Controllers
         public async Task<IActionResult> FindProduct([FromRoute] Guid productId)
         {
             var product = await _serviceProvider.ProductService.FindProductById(productId);
-            var response = ResponseMapper.MapToProductResponse(product);
+            var response = new ApiResponse<ProductResponse>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Value = ResponseMapper.MapToProductResponse(product),
+            };
             return Ok(response);
         }
 
@@ -48,9 +63,17 @@ namespace ComputerShop.Application.Controllers
             {
                 return BadRequest("Update product request is not valid.");
             }
-            var product = await _serviceProvider.ProductService.HandleUpdateProduct(productId, request.Name, request.Description, request.Specifications, request.Price, request.WarrantyMonth);
+            var product = await _serviceProvider.ProductService.HandleUpdateProduct(productId, 
+                                                                                    request.Name, 
+                                                                                    request.Description, 
+                                                                                    request.Specifications, request.Price, 
+                                                                                    request.WarrantyMonth);
             var response = ResponseMapper.MapToProductResponse(product);
-            return Ok(response);
+            return Ok(new ApiResponse<ProductResponse>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Value = response,
+            });
         }
     }
 }

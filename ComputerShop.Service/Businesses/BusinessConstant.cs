@@ -1,5 +1,3 @@
-using System;
-
 namespace ComputerShop.Service.Businesses;
 
 public class BusinessConstant

@@ -3,7 +3,6 @@ using ComputerShop.Application.Dto.Requests;
 using ComputerShop.Application.Dto.Responses;
 using ComputerShop.Service.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ComputerShop.Application.Controllers
 {
@@ -27,7 +26,11 @@ namespace ComputerShop.Application.Controllers
                 return BadRequest("Sign in request is not valid.");
             }
             var result = await _serviceProvider.AuthService.HandleSignIn(request.Login, request.Password);
-            var response = ResponseMapper.MapToSignInResponse(result);
+            var response = new ApiResponse<SignInResponse>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Value = ResponseMapper.MapToSignInResponse(result)
+            };
             return Ok(response);
         }
 
@@ -40,8 +43,16 @@ namespace ComputerShop.Application.Controllers
                 return BadRequest("Sign up request is not valid.");
             }
 
-            var user = await _serviceProvider.AuthService.HandleSignUp(request.Email, request.Password, request.ConfirmedPassword, request.FirstName, request.LastName);
-            var response = ResponseMapper.MapToUserResponse(user);
+            var user = await _serviceProvider.AuthService.HandleSignUp(request.Email, 
+                                                                      request.Password, 
+                                                                      request.ConfirmedPassword, 
+                                                                      request.FirstName, 
+                                                                      request.LastName);
+            var response = new ApiResponse<UserResponse>
+            {
+                StatusCode = StatusCodes.Status201Created,
+                Value = ResponseMapper.MapToUserResponse(user)
+            };
             return Created("/signup", response);
         }
 

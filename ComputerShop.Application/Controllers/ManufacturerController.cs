@@ -1,10 +1,9 @@
 using ComputerShop.Application.Common;
 using ComputerShop.Application.Dto.Requests;
+using ComputerShop.Application.Dto.Responses;
 using ComputerShop.Service.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ComputerShop.Application.Controllers
 {
@@ -29,7 +28,11 @@ namespace ComputerShop.Application.Controllers
                 return BadRequest("Invalid add manufacturer request.");
             }
             var manufacturer = await _serviceProvider.ManufacturerService.HandleAddManufacturer(request.Name);
-            var response = ResponseMapper.MapToManufacturerResponse(manufacturer);
+            var response = new ApiResponse<ManufacturerResponse>
+            {
+                StatusCode = StatusCodes.Status201Created,
+                Value = ResponseMapper.MapToManufacturerResponse(manufacturer),
+            };
             return Created("created", response);
         }
     }

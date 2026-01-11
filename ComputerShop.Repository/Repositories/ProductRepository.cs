@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 using ComputerShop.Repository.Context;
 using ComputerShop.Repository.Models;
 using Microsoft.EntityFrameworkCore;

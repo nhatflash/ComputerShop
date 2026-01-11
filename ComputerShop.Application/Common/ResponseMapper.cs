@@ -1,7 +1,5 @@
-using System;
 using ComputerShop.Application.Dto.Responses;
 using ComputerShop.Repository.Models;
-using ComputerShop.Service.Services;
 
 namespace ComputerShop.Application.Common;
 

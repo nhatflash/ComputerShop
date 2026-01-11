@@ -1,6 +1,4 @@
-using System;
 using ComputerShop.Repository.Context;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ComputerShop.Repository.Repositories;
 
@@ -14,6 +12,7 @@ public class UnitOfWork
     public ProductRepository ProductRepository { get; }
     public ProductImageRepository ProductImageRepository { get; }
     public OrderRepository OrderRepository { get; }
+    public PaymentRepository PaymentRepository { get; }
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -24,6 +23,7 @@ public class UnitOfWork
         ProductRepository = new ProductRepository(context);
         ProductImageRepository = new ProductImageRepository(context);
         OrderRepository = new OrderRepository(context);
+        PaymentRepository = new PaymentRepository(context);
     }
 
     public async Task SaveChangesAsync()

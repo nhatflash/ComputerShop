@@ -1,10 +1,6 @@
 ﻿using ComputerShop.Repository.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Text.Json;
 
 namespace ComputerShop.Repository.Context
@@ -381,6 +377,42 @@ namespace ComputerShop.Repository.Context
                 
                 odr.HasKey(o => o.Id);
             });
+
+            // db-schema for Payment model
+            modelBuilder.Entity<Payment>(pm =>
+            {
+                pm.Property(p => p.Id)
+                    .HasColumnName("id");
+
+                pm.Property(p => p.OrderId)
+                    .HasColumnName("order_id")
+                    .IsRequired();
+
+                pm.Property(p => p.Amount)
+                    .HasColumnName("amount")
+                    .IsRequired();
+
+                pm.Property(p => p.Method)
+                    .HasColumnName("method")
+                    .HasConversion<string>()
+                    .IsRequired();
+                
+                pm.Property(p => p.Status)
+                    .HasColumnName("status")
+                    .HasConversion<string>()
+                    .IsRequired();
+
+                pm.Property(p => p.PaymentDate)
+                    .HasColumnName("payment_date")
+                    .HasDefaultValueSql("GETUTCDATE()");
+
+                pm.HasKey(p => p.Id);
+
+                pm.HasOne(p => p.Order)
+                    .WithMany()
+                    .HasForeignKey(p => p.OrderId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
 
         public DbSet<User> Users { get; set; }
@@ -390,5 +422,6 @@ namespace ComputerShop.Repository.Context
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Payment> Payments { get; set; }
     }
 }

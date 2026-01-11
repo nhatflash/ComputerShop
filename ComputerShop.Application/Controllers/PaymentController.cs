@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
+using ComputerShop.Application.Common;
+using ComputerShop.Service.Context;
+using ComputerShop.Service.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PayOS;
-using PayOS.Models.V2.PaymentRequests;
 
 namespace ComputerShop.Application.Controllers
 {
@@ -11,35 +11,52 @@ namespace ComputerShop.Application.Controllers
     public class PaymentController : ControllerBase
     {
 
-        private readonly IConfiguration _configuration;
+        private readonly ServiceProviders _serviceProvider;
+        private readonly UserContext _userContext;
 
-        public PaymentController(IConfiguration configuration)
+        public PaymentController(ServiceProviders serviceProvider, UserContext userContext)
         {
-            _configuration = configuration;
+            _serviceProvider = serviceProvider;
+            _userContext = userContext;
         }
 
         
-        [HttpPost("payos")]
-        public async Task<IActionResult> CreatePayOSPaymentLink()
+        [HttpPost("payos/{orderId}")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> CreatePayOSCheckOutUrl([FromRoute] Guid orderId)
         {
-            var payOS = new PayOSClient(
-                _configuration["PayOS:ClientID"]!,
-                _configuration["PayOS:APIKey"]!,
-                _configuration["PayOS:ChecksumKey"]!
-            );
-            int orderCode = int.Parse(DateTimeOffset.Now.ToString("ffffff"));
-            Guid productId = Guid.NewGuid();
-
-            var paymentRequest = new CreatePaymentLinkRequest
-            {
-                OrderCode = orderCode,
-                Amount = 2000,
-                Description = "Thanh toán đơn hàng",
-                CancelUrl = "https://localhost:7180/payos-cancel",
-                ReturnUrl = "https://localhost:7180/payos-success"
+            var currentUserId = _userContext.GetCurrentAuthenticatedUserId();
+            var checkoutUrl = await _serviceProvider.PaymentService.HandleCreatePayOsCheckoutUrl(orderId, currentUserId);
+            var response = new ApiResponse<string>
+            { 
+                StatusCode = StatusCodes.Status200OK, 
+                Value = checkoutUrl,
             };
-            var paymentLink = await payOS.PaymentRequests.CreateAsync(paymentRequest);
-            return Ok(paymentLink.CheckoutUrl);
+            return Ok(response);
+        }
+
+
+        [HttpGet("/payos-success")]
+        public async Task<IActionResult> PayOSSuccess()
+        {
+            var response = new ApiResponse<string>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Value = "Thanh toán thành công"
+            };
+            return Ok(response);
+        }
+
+
+        [HttpGet("/payos-cancel")]
+        public async Task<IActionResult> PayOSCancel()
+        {
+            var response = new ApiResponse<string>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Value = "Thanh toán thất bại"
+            };
+            return Ok(response);
         }
     }
 }

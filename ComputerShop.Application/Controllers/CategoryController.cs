@@ -1,8 +1,8 @@
 using ComputerShop.Application.Common;
 using ComputerShop.Application.Dto.Requests;
+using ComputerShop.Application.Dto.Responses;
 using ComputerShop.Service.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerShop.Application.Controllers
@@ -27,8 +27,14 @@ namespace ComputerShop.Application.Controllers
             {
                 return BadRequest("Add category request is not valid.");
             }
-            var category = await _serviceProvider.CategoryService.HandleAddCategory(request.Name, request.Description, request.ImageUrl);
-            var response = ResponseMapper.MapToCategoryResponse(category);
+            var category = await _serviceProvider.CategoryService.HandleAddCategory(request.Name, 
+                                                                                    request.Description, 
+                                                                                    request.ImageUrl);
+            var response = new ApiResponse<CategoryResponse>
+            {
+                StatusCode = StatusCodes.Status201Created,
+                Value = ResponseMapper.MapToCategoryResponse(category)
+            };
             return Created("created", response);
         }
     }

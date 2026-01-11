@@ -1,7 +1,8 @@
+using ComputerShop.Application.Common;
 using ComputerShop.Application.Dto.Requests;
+using ComputerShop.Application.Dto.Responses;
 using ComputerShop.Service.Context;
 using ComputerShop.Service.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerShop.Application.Controllers
@@ -39,8 +40,18 @@ namespace ComputerShop.Application.Controllers
                 }
             }
             var currentUserId = _userContext.GetCurrentAuthenticatedUserId();
-            var order = await _serviceProvider.OrderService.HandleCreateOrder(currentUserId, request.Type, request.ShippingAddress, request.TrackingPhone, request.Notes, itemParam);
-            return Ok(null);
+            var order = await _serviceProvider.OrderService.HandleCreateOrder(currentUserId, 
+                                                                              request.Type, 
+                                                                              request.ShippingAddress, 
+                                                                              request.TrackingPhone, 
+                                                                              request.Notes, 
+                                                                              itemParam);
+            var response = new ApiResponse<OrderResponse>
+            {
+                StatusCode = StatusCodes.Status201Created,
+                Value = ResponseMapper.MapToOrderResponse(order)
+            };
+            return Ok(response);
         }
     }
 }

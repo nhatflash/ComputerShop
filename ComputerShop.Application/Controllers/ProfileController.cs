@@ -1,10 +1,9 @@
 using ComputerShop.Application.Common;
 using ComputerShop.Application.Dto.Requests;
-using ComputerShop.Repository.Enums;
+using ComputerShop.Application.Dto.Responses;
 using ComputerShop.Service.Context;
 using ComputerShop.Service.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerShop.Application.Controllers
@@ -33,8 +32,21 @@ namespace ComputerShop.Application.Controllers
                 return BadRequest("Complete profile info request is not valid.");
             }
             var currentUserId = _userContext.GetCurrentAuthenticatedUserId();
-            var user = await _serviceProvider.UserService.HandleCompleteProfileInfo(currentUserId, request.PhoneNumber, request.Gender, request.Address, request.Ward, request.District, request.City, request.Province, request.PostalCode, request.ProfileImage);
-            var response = ResponseMapper.MapToUserResponse(user);
+            var user = await _serviceProvider.UserService.HandleCompleteProfileInfo(currentUserId, 
+                                                                                    request.PhoneNumber, 
+                                                                                    request.Gender, 
+                                                                                    request.Address, 
+                                                                                    request.Ward, 
+                                                                                    request.District, 
+                                                                                    request.City, 
+                                                                                    request.Province, 
+                                                                                    request.PostalCode, 
+                                                                                    request.ProfileImage);
+            var response = new ApiResponse<UserResponse>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Value = ResponseMapper.MapToUserResponse(user),
+            };
             return Ok(response);
         }
 
@@ -48,8 +60,22 @@ namespace ComputerShop.Application.Controllers
                 return BadRequest("Update profile request is not valid.");
             }
             var currentUserId = _userContext.GetCurrentAuthenticatedUserId();
-            var user = await _serviceProvider.UserService.HandleUpdateProfile(currentUserId, request.FirstName, request.LastName, request.PhoneNumber, request.Address, request.Ward, request.District, request.City, request.Province, request.PostalCode, request.ProfileImage);
-            var response = ResponseMapper.MapToUserResponse(user);
+            var user = await _serviceProvider.UserService.HandleUpdateProfile(currentUserId, 
+                                                                              request.FirstName, 
+                                                                              request.LastName, 
+                                                                              request.PhoneNumber, 
+                                                                              request.Address, 
+                                                                              request.Ward, 
+                                                                              request.District, 
+                                                                              request.City, 
+                                                                              request.Province, 
+                                                                              request.PostalCode, 
+                                                                              request.ProfileImage);
+            var response = new ApiResponse<UserResponse>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Value = ResponseMapper.MapToUserResponse(user),
+            };
             return Ok(response);
         }
 
@@ -59,7 +85,11 @@ namespace ComputerShop.Application.Controllers
         public async Task<IActionResult> RetrieveProfile() {
             var currentUserId = _userContext.GetCurrentAuthenticatedUserId();
             var user = await _serviceProvider.UserService.FindUserById(currentUserId);
-            var response = ResponseMapper.MapToUserResponse(user);
+            var response = new ApiResponse<UserResponse>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Value = ResponseMapper.MapToUserResponse(user)
+            };
             return Ok(response);
         }
 

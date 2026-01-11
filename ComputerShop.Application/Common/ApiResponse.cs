@@ -1,5 +1,3 @@
-using System;
-
 namespace ComputerShop.Application.Common;
 
 public class ApiResponse<T>

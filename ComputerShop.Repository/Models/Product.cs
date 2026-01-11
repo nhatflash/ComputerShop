@@ -1,4 +1,3 @@
-using System;
 using ComputerShop.Repository.Enums;
 
 namespace ComputerShop.Repository.Models;
