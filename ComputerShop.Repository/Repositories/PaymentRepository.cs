@@ -26,13 +26,13 @@ public class PaymentRepository
     }
 
 
-    public async Task<Payment?> FindPaymentByIdAndOrderAsync(Guid id)
+    public async Task<Payment?> FindPaymentByIdIncludeOrderAsync(Guid id)
     {
         return await _context.Payments.Include(p => p.Order).FirstOrDefaultAsync(p => p.Id == id);
     }
 
 
-    public async Task<Payment?> FindPaymentByIdAndOrderWithTrackingAsync(Guid id)
+    public async Task<Payment?> FindPaymentByIdIncludeOrderWithTrackingAsync(Guid id)
     {
         return await _context.Payments.Include(p => p.Order).AsTracking().FirstOrDefaultAsync(p => p.Id == id);
     }

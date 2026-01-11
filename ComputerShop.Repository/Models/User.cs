@@ -38,8 +38,8 @@ namespace ComputerShop.Repository.Models
 
         public DateTimeOffset? VerifiedAt { get; set; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedAt { get; } = DateTimeOffset.Now;
 
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.Now;
     }
 }

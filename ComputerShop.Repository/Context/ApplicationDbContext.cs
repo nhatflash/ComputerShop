@@ -87,11 +87,11 @@ namespace ComputerShop.Repository.Context
 
                 user.Property(u => u.CreatedAt)
                     .HasColumnName("created_at")
-                    .HasDefaultValueSql("GETUTCDATE()");
+                    .IsRequired();
 
                 user.Property(u => u.UpdatedAt)
                     .HasColumnName("updated_at")
-                    .HasDefaultValueSql("GETUTCDATE()");
+                    .IsRequired();
 
                 user.HasKey(u => u.Id);
 
@@ -118,7 +118,7 @@ namespace ComputerShop.Repository.Context
 
                 mn.Property(m => m.CreatedAt)
                     .HasColumnName("created_at")
-                    .HasDefaultValueSql("GETUTCDATE()");
+                    .IsRequired();
 
                 mn.HasKey(m => m.Id);
 
@@ -148,11 +148,11 @@ namespace ComputerShop.Repository.Context
 
                 ct.Property(c => c.CreatedAt)
                     .HasColumnName("created_at")
-                    .HasDefaultValueSql("GETUTCDATE()");
+                    .IsRequired();
 
                 ct.Property(c => c.UpdatedAt)
                     .HasColumnName("updated_at")
-                    .HasDefaultValueSql("GETUTCDATE()");
+                    .IsRequired();
 
                 ct.HasKey(c => c.Id);
 
@@ -208,11 +208,11 @@ namespace ComputerShop.Repository.Context
 
                 pd.Property(p => p.CreatedAt)
                     .HasColumnName("created_at")
-                    .HasDefaultValueSql("GETUTCDATE()");
+                    .IsRequired();
 
                 pd.Property(p => p.UpdatedAt)
                     .HasColumnName("updated_at")
-                    .HasDefaultValueSql("GETUTCDATE()");
+                    .IsRequired();
 
                 pd.HasKey(p => p.Id);
 
@@ -263,7 +263,7 @@ namespace ComputerShop.Repository.Context
 
                 pdi.Property(i => i.CreatedAt)
                     .HasColumnName("created_at")
-                    .HasDefaultValueSql("GETUTCDATE()");
+                    .IsRequired();
 
                 pdi.HasOne(i => i.Product)
                     .WithMany(p => p.ProductImages)
@@ -283,7 +283,7 @@ namespace ComputerShop.Repository.Context
 
                 odr.Property(o => o.OrderDate)
                     .HasColumnName("order_date")
-                    .HasDefaultValueSql("GETUTCDATE()");
+                    .IsRequired();
 
                 odr.Property(o => o.SubTotal)
                     .HasColumnName("sub_total")
@@ -330,7 +330,7 @@ namespace ComputerShop.Repository.Context
 
                 odr.Property(o => o.UpdatedAt)
                     .HasColumnName("updated_at")
-                    .HasDefaultValueSql("GETUTCDATE()");
+                    .IsRequired();
 
                 odr.HasKey(o => o.Id);
                 
@@ -390,21 +390,17 @@ namespace ComputerShop.Repository.Context
 
                 pm.Property(p => p.Amount)
                     .HasColumnName("amount")
+                    .HasPrecision(18,2)
                     .IsRequired();
 
                 pm.Property(p => p.Method)
                     .HasColumnName("method")
                     .HasConversion<string>()
                     .IsRequired();
-                
-                pm.Property(p => p.Status)
-                    .HasColumnName("status")
-                    .HasConversion<string>()
-                    .IsRequired();
 
                 pm.Property(p => p.PaymentDate)
                     .HasColumnName("payment_date")
-                    .HasDefaultValueSql("GETUTCDATE()");
+                    .IsRequired();
 
                 pm.HasKey(p => p.Id);
 

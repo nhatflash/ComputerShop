@@ -3,6 +3,7 @@ using ComputerShop.Service.Context;
 using ComputerShop.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PayOS.Models.Webhooks;
 
 namespace ComputerShop.Application.Controllers
 {
@@ -55,6 +56,19 @@ namespace ComputerShop.Application.Controllers
             {
                 StatusCode = StatusCodes.Status200OK,
                 Value = "Thanh toán thất bại"
+            };
+            return Ok(response);
+        }
+
+
+        [HttpPost("/payos-webhook")]
+        public async Task<IActionResult> ReceivePayOSWebhook([FromBody] Webhook webhook)
+        {
+            await _serviceProvider.PaymentService.HandlePayOSWebhookData(webhook);
+            var response = new ApiResponse<string>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Value = "Nhận phản hồi thành công"
             };
             return Ok(response);
         }

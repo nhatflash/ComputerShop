@@ -6,5 +6,5 @@ public class Manufacturer
 
     public string Name { get; set; } = string.Empty;
 
-    public DateTimeOffset CreatedAt { get; }
+    public DateTimeOffset CreatedAt { get; } = DateTimeOffset.Now;
 }

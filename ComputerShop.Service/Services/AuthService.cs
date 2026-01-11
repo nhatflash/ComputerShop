@@ -69,6 +69,7 @@ public class AuthService
             Id = Guid.NewGuid(),
             Email = email,
             PasswordHash = _passwordEncoder.HashPassword(password),
+            Role = UserRole.Customer,
             FirstName = firstName,
             LastName = lastName,
             Status = UserStatus.Active,

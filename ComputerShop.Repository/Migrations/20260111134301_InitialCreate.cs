@@ -19,8 +19,8 @@ namespace ComputerShop.Repository.Migrations
                     name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     image_url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    created_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    updated_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "GETUTCDATE()")
+                    created_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    updated_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,7 +33,7 @@ namespace ComputerShop.Repository.Migrations
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    created_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "GETUTCDATE()")
+                    created_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,15 +46,17 @@ namespace ComputerShop.Repository.Migrations
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    order_date = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    order_date = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     sub_total = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     shipping_cost = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     tax = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     total_amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     shipping_address = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     tracking_phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    updated_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "GETUTCDATE()")
+                    notes = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    updated_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,8 +84,8 @@ namespace ComputerShop.Repository.Migrations
                     profile_image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     verified_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    created_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    updated_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "GETUTCDATE()")
+                    created_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    updated_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -102,9 +104,10 @@ namespace ComputerShop.Repository.Migrations
                     specifications = table.Column<string>(type: "NVARCHAR(MAX)", nullable: false),
                     price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     stock_quantity = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    warranty_month = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    created_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    updated_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "GETUTCDATE()")
+                    created_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    updated_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -119,6 +122,27 @@ namespace ComputerShop.Repository.Migrations
                         name: "FK_Products_Manufacturers_manufacturer_id",
                         column: x => x.manufacturer_id,
                         principalTable: "Manufacturers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    order_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    method = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    payment_date = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Orders_order_id",
+                        column: x => x.order_id,
+                        principalTable: "Orders",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -149,7 +173,7 @@ namespace ComputerShop.Repository.Migrations
                         column: x => x.productId,
                         principalTable: "Products",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -160,7 +184,7 @@ namespace ComputerShop.Repository.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     product_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     image_url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    created_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "GETUTCDATE()")
+                    created_at = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -194,6 +218,11 @@ namespace ComputerShop.Repository.Migrations
                 name: "IX_OrderItems_productId",
                 table: "OrderItems",
                 column: "productId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_order_id",
+                table: "Payments",
+                column: "order_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductImages_product_id",
@@ -235,6 +264,9 @@ namespace ComputerShop.Repository.Migrations
         {
             migrationBuilder.DropTable(
                 name: "OrderItems");
+
+            migrationBuilder.DropTable(
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "ProductImages");

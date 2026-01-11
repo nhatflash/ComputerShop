@@ -2,7 +2,7 @@ using ComputerShop.Repository.CustomExceptions;
 using ComputerShop.Repository.Enums;
 using ComputerShop.Repository.Models;
 using ComputerShop.Repository.Repositories;
-using ComputerShop.Service.Businesses;
+using ComputerShop.Service.Constant;
 
 namespace ComputerShop.Service.Services;
 

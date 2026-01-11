@@ -106,7 +106,8 @@ public class ResponseMapper
             Specifications = product.Specifications,
             Price = product.Price,
             StockQuantity = product.StockQuantity,
-            Status = product.Status
+            Status = product.Status,
+            ProductImages = MapToProductImageResponses((List<ProductImage>)product.ProductImages)
         };
     }
 

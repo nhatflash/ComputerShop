@@ -8,7 +8,7 @@ public class Order
 
     public Guid UserId { get; set; }
 
-    public DateTimeOffset OrderDate { get; set; }
+    public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
 
     public decimal SubTotal { get; set; }
 
@@ -28,7 +28,7 @@ public class Order
 
     public string? Notes { get; set; }
 
-    public DateTimeOffset UpdatedAt { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.Now;
 
     public ICollection<OrderItem> OrderItems { get; set; } = [];
 }  

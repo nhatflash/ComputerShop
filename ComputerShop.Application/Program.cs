@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using ComputerShop.Application.Middleware;
 using ComputerShop.Repository.Context;
 using ComputerShop.Repository.Repositories;
+using ComputerShop.Service.Background;
 using ComputerShop.Service.Context;
 using ComputerShop.Service.Services;
 using ComputerShop.Service.Utils;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using PayOS;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +77,14 @@ builder.Services.AddScoped<ServiceProviders>();
 builder.Services.AddSingleton<JwtUtils>();
 builder.Services.AddScoped<PasswordEncoder>();
 
+var payOS = new PayOSClient(
+    builder.Configuration["PayOS:ClientID"]!,
+    builder.Configuration["PayOS:APIKey"]!,
+    builder.Configuration["PayOS:ChecksumKey"]!
+);
+
+builder.Services.AddSingleton(payOS);
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => {
@@ -116,6 +126,14 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserContext>();
 
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
+});
+builder.Services.AddScoped<RedisUtils>();
+
+builder.Services.AddHostedService<CleanUnpaidOrdersTask>();
 
 builder.Services.AddCors(options =>
 {

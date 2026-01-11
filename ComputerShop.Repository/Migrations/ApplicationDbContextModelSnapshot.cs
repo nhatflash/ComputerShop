@@ -30,10 +30,8 @@ namespace ComputerShop.Repository.Migrations
                         .HasColumnName("id");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnName("created_at");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -51,10 +49,8 @@ namespace ComputerShop.Repository.Migrations
                         .HasColumnName("name");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
@@ -73,10 +69,8 @@ namespace ComputerShop.Repository.Migrations
                         .HasColumnName("id");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnName("created_at");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -100,11 +94,14 @@ namespace ComputerShop.Repository.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
 
+                    b.Property<string>("Notes")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)")
+                        .HasColumnName("notes");
+
                     b.Property<DateTimeOffset>("OrderDate")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset")
-                        .HasColumnName("order_date")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnName("order_date");
 
                     b.Property<string>("ShippingAddress")
                         .HasMaxLength(256)
@@ -142,11 +139,14 @@ namespace ComputerShop.Repository.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("tracking_phone");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("type");
+
                     b.Property<DateTimeOffset>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnName("updated_at");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier")
@@ -199,6 +199,38 @@ namespace ComputerShop.Repository.Migrations
                     b.ToTable("OrderItems");
                 });
 
+            modelBuilder.Entity("ComputerShop.Repository.Models.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("method");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("order_id");
+
+                    b.Property<DateTimeOffset>("PaymentDate")
+                        .HasColumnType("datetimeoffset")
+                        .HasColumnName("payment_date");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("ComputerShop.Repository.Models.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -211,10 +243,8 @@ namespace ComputerShop.Repository.Migrations
                         .HasColumnName("category_id");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnName("created_at");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -253,10 +283,14 @@ namespace ComputerShop.Repository.Migrations
                         .HasColumnName("stock_quantity");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("WarrantyMonth")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("warranty_month");
 
                     b.HasKey("Id");
 
@@ -281,10 +315,8 @@ namespace ComputerShop.Repository.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnName("created_at");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
@@ -320,10 +352,8 @@ namespace ComputerShop.Repository.Migrations
                         .HasColumnName("city");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnName("created_at");
 
                     b.Property<string>("District")
                         .HasMaxLength(100)
@@ -388,10 +418,8 @@ namespace ComputerShop.Repository.Migrations
                         .HasColumnName("status");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnName("updated_at");
 
                     b.Property<DateTimeOffset?>("VerifiedAt")
                         .HasColumnType("datetimeoffset")
@@ -427,12 +455,23 @@ namespace ComputerShop.Repository.Migrations
                     b.HasOne("ComputerShop.Repository.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("ComputerShop.Repository.Models.Payment", b =>
+                {
+                    b.HasOne("ComputerShop.Repository.Models.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("ComputerShop.Repository.Models.Product", b =>

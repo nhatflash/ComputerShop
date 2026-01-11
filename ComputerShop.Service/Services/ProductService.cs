@@ -75,14 +75,14 @@ public class ProductService
 
     public async Task<Product> FindProductById(Guid id)
     {
-        var product = await _unitOfWork.ProductRepository.FindProductByIdAndImagesAsync(id) ?? throw new NotFoundException("No product found.");
+        var product = await _unitOfWork.ProductRepository.FindProductByIdIncludeImagesAsync(id) ?? throw new NotFoundException("No product found.");
         return product;
     }
 
 
     public async Task<Product> HandleUpdateProduct(Guid productId, string? name, string? description, Dictionary<string, string>? specifications, decimal? price, int? warrantyMonth)
     {
-        var product = await _unitOfWork.ProductRepository.FindProductByIdAndImagesWithTrackingAsync(productId) ?? throw new BadRequestException("No product found.");
+        var product = await _unitOfWork.ProductRepository.FindProductByIdIncludeImagesWithTrackingAsync(productId) ?? throw new BadRequestException("No product found.");
         return await UpdateNewProductInformation(product, name, description, specifications, price, warrantyMonth);
     }
 

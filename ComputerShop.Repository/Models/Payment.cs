@@ -12,9 +12,7 @@ public class Payment
 
     public PaymentMethod Method { get; set; }
 
-    public PaymentStatus Status { get; set; }
-
-    public DateTimeOffset PaymentDate { get; set; }
+    public DateTimeOffset PaymentDate { get; set; } = DateTimeOffset.Now;
 
     public Order Order { get; set; } = default!;
 }

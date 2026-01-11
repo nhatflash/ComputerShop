@@ -15,7 +15,7 @@ public class GlobalExceptionHandler : IExceptionHandler
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        _logger.LogError("Exception thrown.");
+        _logger.LogError("Exception thrown: {}", exception.InnerException);
         var (statusCode, message) = exception switch
         {
             BaseException customEx => (customEx.StatusCode, customEx.Message),

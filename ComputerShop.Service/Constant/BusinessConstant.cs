@@ -1,4 +1,4 @@
-namespace ComputerShop.Service.Businesses;
+namespace ComputerShop.Service.Constant;
 
 public class BusinessConstant
 {

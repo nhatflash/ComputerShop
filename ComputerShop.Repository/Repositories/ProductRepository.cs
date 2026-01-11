@@ -1,4 +1,5 @@
 using ComputerShop.Repository.Context;
+using ComputerShop.Repository.Enums;
 using ComputerShop.Repository.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,12 +32,12 @@ public class ProductRepository
         return await _context.Products.AsTracking().FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<Product?> FindProductByIdAndImagesAsync(Guid id)
+    public async Task<Product?> FindProductByIdIncludeImagesAsync(Guid id)
     {
         return await _context.Products.Include(p => p.ProductImages).FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<Product?> FindProductByIdAndImagesWithTrackingAsync(Guid id)
+    public async Task<Product?> FindProductByIdIncludeImagesWithTrackingAsync(Guid id)
     {
         return await _context.Products.Include(p => p.ProductImages).AsTracking().FirstOrDefaultAsync(p => p.Id == id);
     }
@@ -53,8 +54,20 @@ public class ProductRepository
         return await _context.Products.ToListAsync();
     }
 
-    public async Task<List<Product>> FindAllProductsWithImagesAsync()
+    public async Task<List<Product>> FindAllProductsIncludeImagesAsync()
     {
         return await _context.Products.Include(p => p.ProductImages).ToListAsync();
+    }
+
+
+    public async Task RestockProductsFromOrders(DateTimeOffset expirationTime)
+    {
+        await _context.Products
+                    .Where(p => _context.OrderItems
+                        .Any(oi => oi.ProductId == p.Id && oi.Order.Status == OrderStatus.Pending && oi.Order.OrderDate.CompareTo(expirationTime) <= 0))
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(p => p.StockQuantity, p => p.StockQuantity + _context.OrderItems
+                            .Where(oi => oi.ProductId == p.Id && oi.Order.Status == OrderStatus.Pending && oi.Order.OrderDate.CompareTo(expirationTime) <= 0)
+                            .Sum(oi => oi.Quantity)));
     }
 }

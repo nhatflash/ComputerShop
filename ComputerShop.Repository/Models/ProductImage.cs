@@ -8,7 +8,7 @@ public class ProductImage
 
     public string ImageUrl { get; set; } = string.Empty;
 
-    public DateTimeOffset CreatedAt { get; }
+    public DateTimeOffset CreatedAt { get; } = DateTimeOffset.Now;
 
     public Product Product { get; set; } = default!;
 }

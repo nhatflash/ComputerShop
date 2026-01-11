@@ -1,4 +1,5 @@
 using ComputerShop.Repository.Context;
+using ComputerShop.Repository.Enums;
 using ComputerShop.Repository.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,13 +32,26 @@ public class OrderRepository
         return await _context.Orders.AsTracking().FirstOrDefaultAsync(o => o.Id == id);
     }
 
-    public async Task<Order?> FindOrderByIdAndOrderItemsAsync(Guid id)
+    public async Task<Order?> FindOrderByIdIncludeOrderItemsAsync(Guid id)
     {
         return await _context.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Id == id);
     }
 
-    public async Task<Order?> FindOrderByIdAndOrderItemsWithTrackingAsync(Guid id)
+    public async Task<Order?> FindOrderByIdIncludeOrderItemsWithTrackingAsync(Guid id)
     {
         return await _context.Orders.Include(o => o.OrderItems).AsTracking().FirstOrDefaultAsync(o => o.Id == id);
     }
+
+
+    public async Task<List<Order>> FindOrdersByStatusWithTrackingAsync(OrderStatus status)
+    {
+        return await _context.Orders.AsTracking().Where(o => o.Status == status).ToListAsync();
+    }
+
+    public async Task RemoveOrders(List<Order> orders)
+    {
+        _context.Orders.RemoveRange(orders);
+        await _context.SaveChangesAsync();
+    }
+
 }

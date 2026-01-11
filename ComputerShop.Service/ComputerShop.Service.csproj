@@ -19,6 +19,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.1" />
     <PackageReference Include="payOS" Version="2.0.1" />
@@ -30,7 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Businesses\" />
+    <Folder Include="Background\" />
+    <Folder Include="Constant\" />
     <Folder Include="Context\" />
     <Folder Include="Services/" />
     <Folder Include="Utils/" />

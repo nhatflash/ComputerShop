@@ -3,6 +3,7 @@ using ComputerShop.Application.Dto.Requests;
 using ComputerShop.Application.Dto.Responses;
 using ComputerShop.Service.Context;
 using ComputerShop.Service.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerShop.Application.Controllers
@@ -21,6 +22,8 @@ namespace ComputerShop.Application.Controllers
             _userContext = userContext;
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
         {
             if (!ModelState.IsValid) {
