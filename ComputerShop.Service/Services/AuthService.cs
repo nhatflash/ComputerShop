@@ -11,13 +11,11 @@ public class AuthService
 {
     private readonly UnitOfWork _unitOfWork;
     private readonly JwtUtils _jwtUtils;
-    private readonly PasswordEncoder _passwordEncoder;
 
-    public AuthService(UnitOfWork unitOfWork, JwtUtils jwtUtils, PasswordEncoder passwordEncoder)
+    public AuthService(UnitOfWork unitOfWork, JwtUtils jwtUtils)
     {
         _unitOfWork = unitOfWork;
         _jwtUtils = jwtUtils;
-        _passwordEncoder = passwordEncoder;
     }
 
     public async Task<Dictionary<string, string>> HandleSignIn(string login, string password)
@@ -37,7 +35,7 @@ public class AuthService
             throw new UnauthorizedException("Invalid credentials.");
         }
 
-        if (!_passwordEncoder.VerifyPassword(password, user.PasswordHash))
+        if (!PasswordEncoder.VerifyPassword(password, user.PasswordHash))
         {
             throw new UnauthorizedException("Invalid credentials.");
         }
@@ -68,7 +66,7 @@ public class AuthService
         {
             Id = Guid.NewGuid(),
             Email = email,
-            PasswordHash = _passwordEncoder.HashPassword(password),
+            PasswordHash = PasswordEncoder.HashPassword(password),
             Role = UserRole.Customer,
             FirstName = firstName,
             LastName = lastName,

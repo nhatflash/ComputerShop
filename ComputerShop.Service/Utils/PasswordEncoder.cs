@@ -14,7 +14,7 @@ public class PasswordEncoder
     private const int DegreeOfParallelism = 4;
 
 
-    public string HashPassword(string rawPassword)
+    public static string HashPassword(string rawPassword)
     {
         byte[] salt = new byte[SaltSize];
         RandomNumberGenerator.Fill(salt);
@@ -37,7 +37,7 @@ public class PasswordEncoder
     }
 
 
-    public bool VerifyPassword(string rawPassword, string hashedPassword)
+    public static bool VerifyPassword(string rawPassword, string hashedPassword)
     {
         byte[] combined = Convert.FromBase64String(hashedPassword);
 

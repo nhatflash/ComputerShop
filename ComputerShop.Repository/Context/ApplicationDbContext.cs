@@ -1,6 +1,7 @@
 ﻿using ComputerShop.Repository.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Security.Cryptography.Xml;
 using System.Text.Json;
 
 namespace ComputerShop.Repository.Context
@@ -409,6 +410,103 @@ namespace ComputerShop.Repository.Context
                     .HasForeignKey(p => p.OrderId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+
+
+            // db-schema for Cart model
+            modelBuilder.Entity<Cart>(cart =>
+            {
+                cart.Property(c => c.Id)
+                    .HasColumnName("id");
+
+                cart.Property(c => c.UserId)
+                    .HasColumnName("user_id")
+                    .IsRequired();
+
+                cart.HasOne(c => c.User)
+                    .WithOne()
+                    .HasForeignKey<Cart>(c => c.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                cart.HasKey(c => c.Id);
+            });
+
+
+            // db-schema for CartItem model
+            modelBuilder.Entity<CartItem>(ci =>
+            {
+                ci.Property(c => c.Id)
+                    .HasColumnName("id");
+                
+                ci.Property(c => c.CartId)
+                    .HasColumnName("cart_id")
+                    .IsRequired();
+                
+                ci.Property(c => c.ProductId)
+                    .HasColumnName("product_id")
+                    .IsRequired();
+                
+                ci.Property(c => c.Quantity)
+                    .HasColumnName("quantity")
+                    .IsRequired();
+                
+                ci.Property(c => c.AttachedAt)
+                    .HasColumnName("attached_at")
+                    .IsRequired();
+
+                ci.HasKey(c => c.Id);
+
+                ci.HasOne(c => c.Cart)
+                    .WithMany()
+                    .HasForeignKey(c => c.CartId);
+
+                ci.HasOne(c => c.Product)
+                    .WithMany()
+                    .HasForeignKey(c => c.ProductId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // db-schema for Review model
+            modelBuilder.Entity<Review>(rv =>
+            {
+                rv.Property(r => r.Id)
+                    .HasColumnName("id");
+                
+                rv.Property(r => r.ProductId)
+                    .HasColumnName("product_id")
+                    .IsRequired();
+
+                rv.Property(r => r.UserId)
+                    .HasColumnName("user_id")
+                    .IsRequired();
+                
+                rv.Property(r => r.Rating)
+                    .HasColumnName("rating")
+                    .IsRequired();
+
+                rv.Property(r => r.Comment)
+                    .HasColumnName("comment")
+                    .HasMaxLength(256)
+                    .IsRequired();
+
+                rv.Property(r => r.Attachment)
+                    .HasColumnName("attachment");
+
+                rv.Property(r => r.CreatedAt)
+                    .HasColumnName("created_at")
+                    .IsRequired();
+
+                rv.HasKey(r => r.Id);
+
+                rv.HasOne(r => r.User)
+                    .WithMany()
+                    .HasForeignKey(r => r.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                rv.HasOne(r => r.Product)
+                    .WithMany()
+                    .HasForeignKey(r => r.ProductId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
 
         public DbSet<User> Users { get; set; }
@@ -419,5 +517,7 @@ namespace ComputerShop.Repository.Context
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
     }
 }

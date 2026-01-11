@@ -44,7 +44,7 @@ public class PaymentService
         {
             OrderCode = orderCode,
             Amount = paymentAmount,
-            Description = $"Thanh toán đơn hàng {orderId}",
+            Description = $"Thanh toán đơn hàng",
             ReturnUrl = _configuration["PayOS:ReturnUrl"]!,
             CancelUrl = _configuration["PayOS:CancelUrl"]!
         };

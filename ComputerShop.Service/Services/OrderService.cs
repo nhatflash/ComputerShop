@@ -81,6 +81,28 @@ public class OrderService
     }
 
 
+    public async Task<List<Order>> FindOrdersByUserIdIncludeItems(Guid userId)
+    {
+        var orders = await _unitOfWork.OrderRepository.FindOrdersByUserIdIncludeItemsAsync(userId);
+        if (orders.Count == 0)
+        {
+            throw new NotFoundException("No order found.");
+        }
+        return orders;
+    }
+
+
+    public async Task<List<Order>> RetrieveUserOrdersFromProfile(Guid userId)
+    {
+        var userOrders = await _unitOfWork.OrderRepository.FindOrdersByUserIdAndStatusNotPendingIncludeItemsAsync(userId);
+        if (userOrders.Count == 0)
+        {
+            throw new NotFoundException("No order found.");
+        }
+        return userOrders;
+    }
+
+
     private static void ValidateAddOrderItem(Product product, int quantity)
     {
         if (quantity <= 0)

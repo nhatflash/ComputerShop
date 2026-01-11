@@ -54,4 +54,15 @@ public class OrderRepository
         await _context.SaveChangesAsync();
     }
 
+
+    public async Task<List<Order>> FindOrdersByUserIdIncludeItemsAsync(Guid userId)
+    {
+        return await _context.Orders.Include(o => o.OrderItems).Where(o => o.UserId == userId).ToListAsync();
+    }
+
+    public async Task<List<Order>> FindOrdersByUserIdAndStatusNotPendingIncludeItemsAsync(Guid userId)
+    {
+        return await _context.Orders.Include(o => o.OrderItems).Where(o => o.UserId == userId && o.Status != OrderStatus.Pending).ToListAsync();
+    }
+
 }

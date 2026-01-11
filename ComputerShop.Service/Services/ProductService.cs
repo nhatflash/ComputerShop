@@ -91,6 +91,11 @@ public class ProductService
     {
         var product = await _unitOfWork.ProductRepository.FindProductByIdWithTrackingAsync(productId) ?? throw new NotFoundException("No product found.");
 
+        if (product.Status == ProductStatus.Deleted)
+        {
+            throw new BadRequestException("This product has been removed from the system.");
+        }
+
         if (quantity <= 0)
         {
             throw new BadRequestException("The requested quantity must be greater than 0.");
@@ -99,6 +104,18 @@ public class ProductService
         product.StockQuantity += quantity;
         await _unitOfWork.SaveChangesAsync();
         return product;
+    }
+
+
+    public async Task<List<Product>> HandleAddMultipleProductQuantity(Dictionary<Guid, int> productParam)
+    {
+        List<Product> products = [];
+        foreach (KeyValuePair<Guid, int> entry in productParam)
+        {
+            var product = await HandleAddProductQuantity(entry.Key, entry.Value);
+            products.Add(product);
+        }
+        return products;
     }
 
     private async Task<Product> UpdateNewProductInformation(Product product, string? name, string? description, Dictionary<string, string>? specifications, decimal? price, int? warrantyMonth)
