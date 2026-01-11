@@ -75,5 +75,45 @@ namespace ComputerShop.Application.Controllers
                 Value = response,
             });
         }
+
+
+        [HttpPatch("quantity/add")]
+        [Authorize(Roles = "Admin, Staff")]
+        public async Task<IActionResult> AddProductQuantity([FromBody] AddProductQuantityRequest request)
+        {
+            var product = await _serviceProvider.ProductService.HandleAddProductQuantity(request.ProductId, request.Quantity);
+            var response = new ApiResponse<ProductResponse>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Value = ResponseMapper.MapToProductResponse(product),
+            };
+            return Ok(response);
+        }
+
+
+        [HttpPatch("quantity/addmany")]
+        [Authorize(Roles = "Admin, Staff")]
+        public async Task<IActionResult> AddMultipleProductQuantity([FromBody] AddMultipleProductQuantityRequest request)
+        {
+            Dictionary<Guid, int> productParam = [];
+            foreach (var product in request.Products)
+            {
+                if (!productParam.ContainsKey(product.ProductId))
+                {
+                    productParam.Add(product.ProductId, product.Quantity);
+                }
+                else
+                {
+                    productParam[product.ProductId] += product.Quantity;
+                }
+            } 
+            var products = await _serviceProvider.ProductService.HandleAddMultipleProductQuantity(productParam);
+            var response = new ApiResponse<List<ProductResponse>>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Value = ResponseMapper.MapToProductResponses(products)
+            };
+            return Ok(response);
+        }
     }
 }

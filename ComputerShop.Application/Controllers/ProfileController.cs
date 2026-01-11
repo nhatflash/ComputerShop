@@ -93,7 +93,19 @@ namespace ComputerShop.Application.Controllers
             return Ok(response);
         }
 
-
+        [HttpGet("myOrders")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> MyOrders()
+        {
+            var currentUserId = _userContext.GetCurrentAuthenticatedUserId();
+            var orders = await _serviceProvider.OrderService.RetrieveUserOrdersFromProfile(currentUserId);
+            var response = new ApiResponse<List<OrderResponse>>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Value = ResponseMapper.MapToOrderResponses(orders)
+            };
+            return Ok(response);
+        }
         
 
     }

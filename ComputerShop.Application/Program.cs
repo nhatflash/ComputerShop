@@ -8,6 +8,7 @@ using ComputerShop.Service.Context;
 using ComputerShop.Service.Services;
 using ComputerShop.Service.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -75,7 +76,6 @@ builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<ServiceProviders>();
 
 builder.Services.AddSingleton<JwtUtils>();
-builder.Services.AddScoped<PasswordEncoder>();
 
 var payOS = new PayOSClient(
     builder.Configuration["PayOS:ClientID"]!,
@@ -146,16 +146,37 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwagger();
+    app.UseSwagger(c =>
+    {
+        c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+        {
+            swaggerDoc.Servers = new List<OpenApiServer>
+            {
+                new()
+                {
+                    Url = $"{httpReq.Scheme}://{httpReq.Host.Value}"
+                }
+            };
+        });
+    });
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "Computer API v1");
+        options.SwaggerEndpoint("./openapi/v1.json", "Computer API v1");
     });
 }
 

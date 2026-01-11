@@ -1,6 +1,7 @@
 using ComputerShop.Application.Common;
 using ComputerShop.Application.Dto.Requests;
 using ComputerShop.Application.Dto.Responses;
+using ComputerShop.Repository.Models;
 using ComputerShop.Service.Context;
 using ComputerShop.Service.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -56,5 +57,6 @@ namespace ComputerShop.Application.Controllers
             };
             return Ok(response);
         }
+
     }
 }

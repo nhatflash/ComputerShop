@@ -15,11 +15,11 @@ public class GlobalExceptionHandler : IExceptionHandler
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        _logger.LogError("Exception thrown: {}", exception.InnerException);
+        _logger.LogError("Exception thrown: {}", exception);
         var (statusCode, message) = exception switch
         {
             BaseException customEx => (customEx.StatusCode, customEx.Message),
-            _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
+            _ => (StatusCodes.Status500InternalServerError, $"An unexpected error occurred: {exception}")
         };
 
         httpContext.Response.StatusCode = statusCode;
